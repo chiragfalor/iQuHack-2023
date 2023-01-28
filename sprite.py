@@ -30,8 +30,8 @@ class RandomWalker:
 
 class Sprite:
 
-    BITS_PER_COLOR_COMPONENT = 2
-    NUM_COLORS = 3
+    BITS_PER_COLOR_COMPONENT = 3
+    NUM_COLORS = 2
     BITS_PER_LOCATION = 2 # should be 1 + log2(NUM_COLORS)
     PIXEL_SIZE = 64
 
@@ -45,7 +45,7 @@ class Sprite:
     def get_random_color(self, random_bits):
         assert len(random_bits) == self.BITS_PER_COLOR_COMPONENT * 3
         def get_color_component(bits):
-            MIN_VAL = 32
+            MIN_VAL = 64
             MAX_VAL = 255
             return int(MIN_VAL + (MAX_VAL - MIN_VAL) * bits_to_int(bits) / (2 ** self.BITS_PER_COLOR_COMPONENT - 1))
         return (get_color_component(random_bits[0:3]), get_color_component(random_bits[3:6]), get_color_component(random_bits[6:9]))
@@ -137,7 +137,7 @@ class Sprite:
 
 if __name__ == "__main__":
     for i in range(50):
-        random_array = [random.randint(0, 1) for _ in range(60)]
+        random_array = [random.getrandbits(1) for _ in range(60)]
         sprite = Sprite(random_array)
         sprite.save(f"sprites_random_walk/sprite_{i}.png")
         print(f"Saved sprite {i}")

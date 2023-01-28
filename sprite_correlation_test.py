@@ -1,5 +1,5 @@
 
-from sprite_gen import Sprite
+from sprite import Sprite
 import random
 
 
