@@ -54,6 +54,9 @@ class Sprite:
             self.color_randomness = []
             while len(self.color_randomness) < self.NUM_COLORS * self.BITS_PER_COLOR_COMPONENT * 3:
                 self.color_randomness += self.random_array
+                self.random_array = self.random_array[::-1]
+                # flip the bits
+                self.random_array = [1 - bit for bit in self.random_array]
             self.color_randomness = self.color_randomness[:self.NUM_COLORS * self.BITS_PER_COLOR_COMPONENT * 3]
 
             self.random_array = self.random_array[::-1]
@@ -61,6 +64,7 @@ class Sprite:
             self.location_randomness = []
             while len(self.location_randomness) < self.BITS_PER_LOCATION * ((self.dims[0] // 2) + 1) * self.dims[1]:
                 self.location_randomness += self.random_array
+                self.random_array = self.random_array[::-1]
             self.location_randomness = self.location_randomness[:self.BITS_PER_LOCATION * ((self.dims[0] // 2) + 1) * self.dims[1]]
 
     def get_random_color(self, random_bits):
