@@ -102,11 +102,9 @@ class QuBookInterface:
     def record_friendship(self):
         friend1_str = self.friend1_var.get()
         friend2_str = self.friend2_var.get()
-        print(friend1, friend2)
-        friend1_str, friend2_str = 'c', 'y'
+        friend1_str, friend2_str = 'Chirag', 'Berkin'
         friend1 = self.qfb.get_person(friend1_str)
         friend2 = self.qfb.get_person(friend2_str)
-        print(friend1, friend2)
         self.qfb.add_friendship(friend1, friend2)
         self.friendship_screen.destroy()
         self.friends_profile_screen(friend1_str, friend2_str)
@@ -146,14 +144,14 @@ class QuBookInterface:
         Label(text="").pack()
         Label(text="Here are your friends' profile photos!", bg="#AAC79D", width="300", height="2", font=("Calibri", 13)).pack()
         Label(text="    ", width="300", height="1", font=("Calibri", 10)).pack()
-        img1 = Image.open(f"pfps/{friend1_name}.png")
+        img1 = Image.open(f"pfps/{friend1_name}.jpg")
         img1 = img1.resize((120, 120), Image.ANTIALIAS)
         img1 = ImageTk.PhotoImage(img1, master=self.friends_screen, width=64, height=64)
         label1 = Label(image=img1, anchor=CENTER)
         label1.image = img1
         label1.pack()
         Label(text=friend1_name, width="300", height="2", font=("Calibri", 12)).pack()
-        img2 = Image.open(f"pfps/{friend2_name}.png")
+        img2 = Image.open(f"pfps/{friend2_name}.jpg")
         img2 = img2.resize((120, 120), Image.ANTIALIAS)
         img2 = ImageTk.PhotoImage(img2, master=self.friends_screen, width=64, height=64)
         label2 = Label(image=img2, anchor=CENTER)
