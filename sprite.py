@@ -168,17 +168,27 @@ class Sprite:
         while x < self.inside_square.size[0]:
             y = 0
             while y < self.inside_square.size[1]:
-                if y == 1:
+                if y == self.image.size[1]:
                     self.inside_square.paste(self.image.rotate(180), (x, y))
                 else:
                     self.inside_square.paste(self.image, (x, y))
                 y += self.image.size[1]
             x += self.image.size[0]
         self.inside_square.thumbnail(self.image.size, Image.ANTIALIAS)
-        for (i, location) in enumerate([(self.image.size[0], 0), (0, self.image.size[1]), (self.image.size[0], 2*self.image.size[1]), (2*self.image.size[0], self.image.size[1])]):
-            if i != 0:
-                self.image = self.image.rotate(90)
-            self.black_square.paste(self.image, location)
+
+        if random.randint(1, 10) <= 5:
+            locations = [(self.image.size[0], 0), (0, self.image.size[1]), (self.image.size[0], 2*self.image.size[1]), (2*self.image.size[0], self.image.size[1])]
+            for (i, location) in enumerate(locations):
+                if i != 0:
+                    self.image = self.image.rotate(90)
+                self.black_square.paste(self.image, location)
+        else: 
+            locations = [(0, 0), (2*self.image.size[0], 0), (0, 2*self.image.size[1]), (2*self.image.size[0], 2*self.image.size[1])]
+            for (i, location) in enumerate(locations):
+                if i > 1:
+                    self.black_square.paste(self.image.rotate(180), location)
+                else: 
+                    self.black_square.paste(self.image, location)
         self.black_square.paste(self.inside_square, self.image.size)
         return self.black_square
 
@@ -188,7 +198,7 @@ class Sprite:
         return self.img_array
 
 if __name__ == "__main__":
-    for i in range(20):
+    for i in range(10, 50):
         random_arr = [random.getrandbits(1) for _ in range(9)]
         sprite = Sprite(random_arr)
         sprite.save(f"sprites_random_walk/sprite_{i}.png")
