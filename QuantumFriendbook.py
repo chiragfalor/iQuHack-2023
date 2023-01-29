@@ -1,4 +1,5 @@
 from sprite import Sprite
+from qstate_to_repsn import QuantumPersonalityState
 
 
 class Friendbook:
@@ -39,6 +40,7 @@ class Friendbook:
         if (input("Would you like to make a new profile? (y/n): ")) == "y":
             self.make_new_profile(person)
             self.add_friends(person, friend_names)
+            print("Profile created and profile picture saved!")
 
     def make_new_profile(self, person):
         self.add_person(person)
@@ -62,13 +64,15 @@ class Person:
         "Do you think Schrodinger should have a cat?",
         "Do you think Schrodinger should have opened the box?",
         "What is the likelihood that universe is deterministic?",
-        "How much do you like cats?"
+        "How much do you like cats?",
+        "How much do you like quantum mechanics?",
     ]
 
     def __init__(self, name, age):
         self.name = name
         self.age = age
         self.friends = []
+        self.personality_quantum_state = None
 
     def get_personality_traits(self):
         self.personality_traits = []
@@ -77,6 +81,7 @@ class Person:
         for question in self.PERSONALITY_QUESTIONS:
             print(question)
             self.personality_traits.append(float(input()))
+        
     
     def update_profile(self):
         self.update_profile_repsn()
@@ -84,15 +89,22 @@ class Person:
 
     def update_profile_repsn(self):
         # This function will return from pfp representation from quantum state based on personality traits and friends
-        self.pfp_repsn = []
-        pass
+        if self.personality_quantum_state is None:
+            self.personality_quantum_state = QuantumPersonalityState(self.personality_traits)
+        self.pfp_repsn = self.personality_quantum_state.get_pfp_reprn()
 
     def update_profile_picture(self):
         self.sprite = Sprite(self.pfp_repsn)
         self.pfp = self.sprite.render()
+        self.sprite.save(self.name + ".jpg")
 
     def __eq__(self, __o: object) -> bool:
         return self.name == __o.name
 
+    def __hash__(self) -> int:
+        return hash(self.name)
 
 
+if __name__=="__main__":
+    qfb = Friendbook()
+    qfb.data_for_new_profile()
