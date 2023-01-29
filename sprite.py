@@ -147,8 +147,36 @@ class Sprite:
                 for k in range(self.PIXEL_SIZE):
                     for l in range(self.PIXEL_SIZE):
                         self.image.putpixel((i * self.PIXEL_SIZE + k, j * self.PIXEL_SIZE + l), self.img_array[i][j])
-
-        return self.image
+        
+        self.black_square = Image.new('RGB', (3*self.dims[0] * self.PIXEL_SIZE, 3*self.dims[1] * self.PIXEL_SIZE))
+        for i in range(3*self.dims[0]):
+            for j in range(3*self.dims[1]):
+                for k in range(self.PIXEL_SIZE):
+                    for l in range(self.PIXEL_SIZE):
+                        self.black_square.putpixel((i * self.PIXEL_SIZE + k, j * self.PIXEL_SIZE + l), (0, 0, 0))
+        self.inside_square = Image.new('RGB', (2*self.dims[0] * self.PIXEL_SIZE, 2*self.dims[1] * self.PIXEL_SIZE))
+        for i in range(2*self.dims[0]):
+            for j in range(2*self.dims[1]):
+                for k in range(self.PIXEL_SIZE):
+                    for l in range(self.PIXEL_SIZE):
+                        self.inside_square.putpixel((i * self.PIXEL_SIZE + k, j * self.PIXEL_SIZE + l), (0, 0, 0))
+        x = 0
+        while x < self.inside_square.size[0]:
+            y = 0
+            while y < self.inside_square.size[1]:
+                if y == 1:
+                    self.inside_square.paste(self.image.rotate(180), (x, y))
+                else:
+                    self.inside_square.paste(self.image, (x, y))
+                y += self.image.size[1]
+            x += self.image.size[0]
+        self.inside_square.thumbnail(self.image.size, Image.ANTIALIAS)
+        for (i, location) in enumerate([(self.image.size[0], 0), (0, self.image.size[1]), (self.image.size[0], 2*self.image.size[1]), (2*self.image.size[0], self.image.size[1])]):
+            if i != 0:
+                self.image = self.image.rotate(90)
+            self.black_square.paste(self.image, location)
+        self.black_square.paste(self.inside_square, self.image.size)
+        return self.black_square
 
     def get_image(self):
         if self.img_array is None:
@@ -156,7 +184,7 @@ class Sprite:
         return self.img_array
 
 if __name__ == "__main__":
-    for i in range(1):
+    for i in range(20):
         random_arr = [random.getrandbits(1) for _ in range(9)]
         sprite = Sprite(random_arr)
         sprite.save(f"sprites_random_walk/sprite_{i}.png")
