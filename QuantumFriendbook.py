@@ -1,6 +1,3 @@
-
-
-
 from sprite import Sprite
 
 
@@ -60,6 +57,14 @@ class Person:
     # This is the class that will hold the information about each person in the friendbook
     # It will hold the name, age, and friends of each person
 
+    PERSONALITY_QUESTIONS = [
+        "Do you think Schrodinger's cat is alive or dead?",
+        "Do you think Schrodinger should have a cat?",
+        "Do you think Schrodinger should have opened the box?",
+        "What is the likelihood that universe is deterministic?",
+        "How much do you like cats?"
+    ]
+
     def __init__(self, name, age):
         self.name = name
         self.age = age
@@ -67,21 +72,12 @@ class Person:
 
     def get_personality_traits(self):
         self.personality_traits = []
-        self.personality_traits.append(input("Enter your favorite color: "))
-        self.personality_traits.append(input("Enter your favorite food: "))
-        # self.personality_traits.append(input("Enter your favorite animal: "))
-        # self.personality_traits.append(input("Enter your favorite sport: "))
-        # self.personality_traits.append(input("Enter your favorite movie: "))
-        # self.personality_traits.append(input("Enter your favorite book: "))
-        # self.personality_traits.append(input("Enter your favorite song: "))
-        # self.personality_traits.append(input("Enter your favorite game: "))
-        # self.personality_traits.append(input("Enter your favorite TV show: "))
-        # self.personality_traits.append(input("Enter your favorite holiday: "))
-        # self.personality_traits.append(input("Enter your favorite season: "))
-        # self.personality_traits.append(input("Enter your favorite hobby: "))
-        # self.personality_traits.append(input("Enter your favorite sport team: "))
-        # self.personality_traits.append(input("Enter your favorite video game: "))
-        
+
+        print("Please enter answers to following questions in between 0 to 1")
+        for question in self.PERSONALITY_QUESTIONS:
+            print(question)
+            self.personality_traits.append(float(input()))
+    
     def update_profile(self):
         self.update_profile_repsn()
         self.update_profile_picture()

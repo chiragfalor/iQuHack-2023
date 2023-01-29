@@ -37,10 +37,31 @@ class Sprite:
 
     def __init__(self, random_array, size = 5):
         assert size % 2 == 1
-        assert len(random_array) >= self.NUM_COLORS * self.BITS_PER_COLOR_COMPONENT * 3 + self.BITS_PER_LOCATION * ((size // 2) + 1) * size
-        self.img_array = None
+
         self.random_array = random_array
+        self.img_array = None
         self.dims = (size, size)
+
+        self.generate()
+
+    def distribute_randomness(self):
+        if len(self.random_array) >= self.NUM_COLORS * self.BITS_PER_COLOR_COMPONENT * 3 + self.BITS_PER_LOCATION * ((self.dims[0] // 2) + 1) * self.dims[1]:
+            self.color_randomness = self.random_array[:self.NUM_COLORS * self.BITS_PER_COLOR_COMPONENT * 3]
+            self.location_randomness = self.random_array[self.NUM_COLORS * self.BITS_PER_COLOR_COMPONENT * 3: self.NUM_COLORS * self.BITS_PER_COLOR_COMPONENT * 3 + self.BITS_PER_LOCATION * ((self.dims[0] // 2) + 1) * self.dims[1]]
+        else:
+            print("Warning: not enough randomness provided to Sprite constructor, repeating randomness")
+            # ah we have low randomness, we can duplicate the randomness to make it more random
+            self.color_randomness = []
+            while len(self.color_randomness) < self.NUM_COLORS * self.BITS_PER_COLOR_COMPONENT * 3:
+                self.color_randomness += self.random_array
+            self.color_randomness = self.color_randomness[:self.NUM_COLORS * self.BITS_PER_COLOR_COMPONENT * 3]
+
+            self.random_array = self.random_array[::-1]
+
+            self.location_randomness = []
+            while len(self.location_randomness) < self.BITS_PER_LOCATION * ((self.dims[0] // 2) + 1) * self.dims[1]:
+                self.location_randomness += self.random_array
+            self.location_randomness = self.location_randomness[:self.BITS_PER_LOCATION * ((self.dims[0] // 2) + 1) * self.dims[1]]
 
     def get_random_color(self, random_bits):
         assert len(random_bits) == self.BITS_PER_COLOR_COMPONENT * 3
@@ -100,8 +121,7 @@ class Sprite:
     def generate(self):
         self.img_array = [[(0, 0, 0) for _ in range(self.dims[1])] for _ in range(self.dims[0])]
 
-        self.color_randomness = self.random_array[:self.NUM_COLORS * self.BITS_PER_COLOR_COMPONENT * 3]
-        self.location_randomness = self.random_array[self.NUM_COLORS * self.BITS_PER_COLOR_COMPONENT * 3: self.NUM_COLORS * self.BITS_PER_COLOR_COMPONENT * 3 + self.BITS_PER_LOCATION * ((self.dims[0] // 2) + 1) * self.dims[1]]
+        self.distribute_randomness()
 
         self.color_palette = self.get_color_palette(self.color_randomness, gradient_size=0)
         self.image_elements = self.get_image_elements(self.location_randomness)
@@ -136,9 +156,9 @@ class Sprite:
         return self.img_array
 
 if __name__ == "__main__":
-    for i in range(50):
-        random_array = [random.getrandbits(1) for _ in range(60)]
-        sprite = Sprite(random_array)
+    for i in range(1):
+        random_arr = [random.getrandbits(1) for _ in range(9)]
+        sprite = Sprite(random_arr)
         sprite.save(f"sprites_random_walk/sprite_{i}.png")
         print(f"Saved sprite {i}")
     
