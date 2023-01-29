@@ -55,6 +55,11 @@ class Friendbook:
                 if friend.name == friend_name:
                     self.add_friendship(person, friend)
 
+    def get_person(self, name):
+        for person in self.people:
+            if person.name == name:
+                return person
+
     def update(self):
         # open database
         files = os.listdir("database")
@@ -129,16 +134,21 @@ class Person:
     def __hash__(self) -> int:
         return hash(self.name)
 
+    def __repr__(self) -> str:
+        return f"{self.name} ({self.personality_traits})"
+
 
 if __name__=="__main__":
-    qbi = QuBookInterface()
     qfb = Friendbook()
-    # while True:
-    #     # qbi.input_account_screen()
-    #     qfb.update()
-    qbi.display_profile_screen()
-    berkin = Person("Berkin", 20, [0,1,0,0,1,1])
-    qfb.make_new_profile(berkin)
-    chirag = Person("Chirag", 20, [1,1,0,0,1,1])
-    qfb.make_new_profile(chirag)
-    qfb.add_friendship(berkin, chirag)
+    qbi = QuBookInterface(qfb)
+    while True:
+        # qbi.input_account_screen()
+        qfb.update()
+        print(qfb.people)
+        print(qfb.get_person("c"))
+        qbi.display_profile_screen()
+    # berkin = Person("Berkin", 20, [0,1,0,0,1,1])
+    # qfb.make_new_profile(berkin)
+    # chirag = Person("Chirag", 20, [1,1,0,0,1,1])
+    # qfb.make_new_profile(chirag)
+    # qfb.add_friendship(berkin, chirag)
