@@ -1,6 +1,7 @@
 from sprite import Sprite
 from qstate_to_repsn import QuantumPersonalityState, EntangledPersonalityState
-
+from QuBookInterface import QuBookInterface
+import os
 
 class Friendbook:
     # This is the class that will hold the graph of all the people in the friendbook
@@ -53,6 +54,20 @@ class Friendbook:
             for friend in self.people:
                 if friend.name == friend_name:
                     self.add_friendship(person, friend)
+
+    def update(self):
+        # open database
+        files = os.listdir("database")
+        for file in files:
+            name = file.split(".")[0]
+            with open(f"database/{file}", "r") as f:
+                answers = list(map(int, f.read().splitlines()))
+            p = Person(name, answers)
+            self.make_new_profile(p)
+        
+        print("Friendbook updated!")
+
+            
         
 
 
@@ -70,9 +85,8 @@ class Person:
         "How much do you like quantum mechanics?",
     ]
 
-    def __init__(self, name, age, personality_traits=None):
+    def __init__(self, name, personality_traits=None):
         self.name = name
-        self.age = age
         self.friends = []
         self.personality_quantum_state = None
         if personality_traits is None:
@@ -105,7 +119,7 @@ class Person:
     def update_profile_picture(self, new_friend=None):
         self.sprite = Sprite(self.pfp_repsn)
         self.pfp = self.sprite.render()
-        self.sprite.save(self.name + ".jpg")
+        self.sprite.save(f"pfps/{self.name}.jpg")
         if new_friend is not None:
             new_friend.update_profile_picture()
 
@@ -117,7 +131,12 @@ class Person:
 
 
 if __name__=="__main__":
+    qbi = QuBookInterface()
     qfb = Friendbook()
+    # while True:
+    #     # qbi.input_account_screen()
+    #     qfb.update()
+    qbi.display_profile_screen()
     berkin = Person("Berkin", 20, [0,1,0,0,1,1])
     qfb.make_new_profile(berkin)
     chirag = Person("Chirag", 20, [1,1,0,0,1,1])
