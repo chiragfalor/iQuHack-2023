@@ -24,14 +24,14 @@ class QuantumPersonalityState:
         
         for i in range(len(personality_traits)):
             if personality_traits[i] == 1:
-                self.qc.x(i + start_index)
+                self.qc.x(i+3+start_index)
 
         # correlate
         for i in range(len(personality_traits)):
             if personality_traits[i] == 1:
-                self.qc.toffoli(0, 1, i+3+start_index)
+                self.qc.toffoli(0, 1, self.NUM_QUBITS-i-1+start_index)
             else:
-                self.qc.cnot(2, i+3+start_index)
+                self.qc.cnot(2, self.NUM_QUBITS-i-1+start_index)
 
     def draw(self):
         print(self.qc.draw())
