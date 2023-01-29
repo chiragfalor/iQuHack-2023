@@ -198,7 +198,7 @@ class Sprite:
         return self.img_array
 
 if __name__ == "__main__":
-    for i in range(10, 50):
+    for i in range(50, 60):
         random_arr = [random.getrandbits(1) for _ in range(9)]
         sprite = Sprite(random_arr)
         sprite.save(f"sprites_random_walk/sprite_{i}.png")

@@ -1,4 +1,5 @@
 from tkinter import *
+from PIL import ImageTk, Image
 import os
  
 class QuBookInterface:
@@ -17,12 +18,13 @@ class QuBookInterface:
 
     def record_answers(self):
         name_info = self.name_q.get()
-        file = open(name_info+".txt", "w")
+        file = open(f"database/{name_info}.txt", "w")
         for answer in self.personality_answers:
             file.write(answer.get() + "\n")
         file.close()
     
-        Label(main_screen, text="Answers recorded", fg="green", font=("calibri", 11)).pack()
+        Label(self.input_screen, text="Answers recorded", fg="green", font=("calibri", 11)).pack()
+        self.input_screen.destroy()
 
     # for finding friends to entangle with
     '''
@@ -45,11 +47,10 @@ class QuBookInterface:
         Label(user_not_found_screen, text="User Not Found :(").pack()
         Button(user_not_found_screen, text="OK", command=delete_user_not_found_screen).pack()
     '''
-    def main_account_screen(self):
-        global main_screen
-        main_screen = Tk()
-        main_screen.geometry("300x250")
-        main_screen.title("QuBook")
+    def input_account_screen(self):
+        self.input_screen = Tk()
+        self.input_screen.geometry("300x250")
+        self.input_screen.title("QuBook")
         Label(text="Welcome to QuBook!", bg="#AAC79D", width="300", height="2", font=("Calibri", 20)).pack()
         Label(text="").pack()
         Label(text="Please answer these personality questions to quantum-ly generate your profile photo!", bg="#AAC79D", width="300", height="2", font=("Calibri", 13)).pack()
@@ -62,20 +63,46 @@ class QuBookInterface:
 
         Label(text="Please enter 1 for yes, 0 for no", bg="#AAC79D", width="300", height="2", font=("Calibri", 13)).pack()
     
-        Label(main_screen, text="").pack()
-        name_label = Label(main_screen, text="Enter your name: ")
+        Label(self.input_screen, text="").pack()
+        name_label = Label(self.input_screen, text="Enter your name: ")
         name_label.pack()
-        Entry(main_screen, textvariable=self.name_q).pack()
-        Label(main_screen, text="").pack()
+        Entry(self.input_screen, textvariable=self.name_q).pack()
+        Label(self.input_screen, text="").pack()
         for i in range(len(self.QUESTION_LIST)):
             question, q_var = self.QUESTION_LIST[i], self.personality_answers[i]
-            Label(main_screen, text=f"Q{i}: {question}").pack()
-            Entry(main_screen, textvariable=q_var).pack()
+            Label(self.input_screen, text=f"Q{i}: {question}").pack()
+            Entry(self.input_screen, textvariable=q_var).pack()
         
-        Label(main_screen, text="").pack()
+        Label(self.input_screen, text="").pack()
 
-        Button(main_screen, text="Done!", width=10, height=1, bg="#AAC79D", command = self.record_answers).pack()
-        main_screen.mainloop()
- 
-Interface = QuBookInterface()
-Interface.main_account_screen()
+        Button(self.input_screen, text="Done!", width=10, height=1, bg="#AAC79D", command = self.record_answers).pack()
+
+        self.input_screen.mainloop()
+
+    def display_profile_screen(self):
+        self.dp_screen = Tk()
+        self.dp_screen.geometry("512x1024")
+        self.dp_screen.title("QuBook")
+        Label(text="Welcome to QuBook!", bg="#AAC79D", width="300", height="2", font=("Calibri", 20)).pack()
+        Label(text="").pack()
+        Label(text="Here are your friends' profile photos!", bg="#AAC79D", width="300", height="2", font=("Calibri", 13)).pack()
+        images = os.listdir("pfps")
+        print(images)
+        names = ['Chirag', 'Berkin', 'Yiming', 'Tung']
+        Label(text="    ", width="300", height="1", font=("Calibri", 10)).pack()
+        for i, image in enumerate(images):
+            img = Image.open(f"pfps/{image}")
+            img = img.resize((120, 120), Image.ANTIALIAS)
+            img = ImageTk.PhotoImage(img, master=self.dp_screen, width=64, height=64)
+            label1 = Label(image=img, anchor=CENTER)
+            label1.image = img
+            label1.pack()
+            Label(text=names[i], width="300", height="2", font=("Calibri", 12)).pack()
+            
+        self.dp_screen.mainloop()
+        
+
+        
+if __name__ == "__main__":
+    Interface = QuBookInterface()
+    Interface.display_profile_screen()
