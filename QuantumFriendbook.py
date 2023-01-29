@@ -1,5 +1,5 @@
 from sprite import Sprite
-from qstate_to_repsn import QuantumPersonalityState
+from qstate_to_repsn import QuantumPersonalityState, EntangledPersonalityState
 
 
 class Friendbook:
@@ -17,6 +17,9 @@ class Friendbook:
     def add_friendship(self, person1, person2):
         self.graph[person1].append(person2)
         self.graph[person2].append(person1)
+        person1.update_profile(person2)
+        print(f"{person1.name} and {person2.name} are now friends!")
+
 
     def get_friends(self, person):
         return self.graph[person]
@@ -33,14 +36,13 @@ class Friendbook:
         name = input("Enter your name: ")
         age = int(input("Enter your age: "))
         person = Person(name, age)
-        person.get_personality_traits()
         friend_names = input("Enter the names of your friends, separated by commas: ")
         friend_names = friend_names.split(", ")
 
         if (input("Would you like to make a new profile? (y/n): ")) == "y":
             self.make_new_profile(person)
-            self.add_friends(person, friend_names)
             print("Profile created and profile picture saved!")
+            self.add_friends(person, friend_names)
 
     def make_new_profile(self, person):
         self.add_person(person)
@@ -68,11 +70,15 @@ class Person:
         "How much do you like quantum mechanics?",
     ]
 
-    def __init__(self, name, age):
+    def __init__(self, name, age, personality_traits=None):
         self.name = name
         self.age = age
         self.friends = []
         self.personality_quantum_state = None
+        if personality_traits is None:
+            self.get_personality_traits()
+        else:
+            self.personality_traits = personality_traits
 
     def get_personality_traits(self):
         self.personality_traits = []
@@ -82,21 +88,26 @@ class Person:
             print(question)
             self.personality_traits.append(float(input()))
         
+    def update_profile(self, new_friend=None):
+        self.update_profile_repsn(new_friend)
+        self.update_profile_picture(new_friend)
     
-    def update_profile(self):
-        self.update_profile_repsn()
-        self.update_profile_picture()
 
-    def update_profile_repsn(self):
+    def update_profile_repsn(self, new_friend=None):
         # This function will return from pfp representation from quantum state based on personality traits and friends
-        if self.personality_quantum_state is None:
+        if new_friend is None:
             self.personality_quantum_state = QuantumPersonalityState(self.personality_traits)
-        self.pfp_repsn = self.personality_quantum_state.get_pfp_reprn()
-
-    def update_profile_picture(self):
+            self.pfp_repsn = self.personality_quantum_state.get_pfp_reprn()
+        else:
+            eps = EntangledPersonalityState(self.personality_traits, new_friend.personality_traits)
+            self.pfp_repsn, new_friend.pfp_repsn = EntangledPersonalityState.get_pfp_reprn(eps)
+        
+    def update_profile_picture(self, new_friend=None):
         self.sprite = Sprite(self.pfp_repsn)
         self.pfp = self.sprite.render()
         self.sprite.save(self.name + ".jpg")
+        if new_friend is not None:
+            new_friend.update_profile_picture()
 
     def __eq__(self, __o: object) -> bool:
         return self.name == __o.name
@@ -107,4 +118,8 @@ class Person:
 
 if __name__=="__main__":
     qfb = Friendbook()
-    qfb.data_for_new_profile()
+    berkin = Person("Berkin", 20, [0,1,0,0,1,1])
+    qfb.make_new_profile(berkin)
+    chirag = Person("Chirag", 20, [1,1,0,0,1,1])
+    qfb.make_new_profile(chirag)
+    qfb.add_friendship(berkin, chirag)
