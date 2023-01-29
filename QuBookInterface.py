@@ -94,7 +94,7 @@ class QuBookInterface:
             # frame = Frame(self.dp_screen, width=64, height=64)
             # frame.pack()
             # frame.place(anchor=NW)
-            Label(self.dp_screen, image=img).pack(side = "bottom", fill = "both", expand = "yes")
+            Label(self.dp_screen, image=img).pack()
             Label(self.dp_screen, text=image.split(".")[0]).pack()
             Label(self.dp_screen, text="").pack()
         self.dp_screen.mainloop()
